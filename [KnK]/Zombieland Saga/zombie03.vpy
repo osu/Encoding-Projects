@@ -36,26 +36,19 @@ def overlay_credits_in_oped(clip: vs.VideoNode, source: vs.VideoNode) -> vs.Vide
 	ncop_src = open_source(r'.\zombie_ncop.m2ts').std.Trim(0,1999)
 	ncop_processed = core.lsmas.LWLibavSource(r'zombie_ncop_loss.h264').std.Trim(0,1999)
 
-#	nced_src = open_source(r'.\zombie_nced.m2ts').std.Trim(0,2157)
-#	nced_processed = core.lsmas.LWLibavSource(r'.\zombie_nced_loss.h264').std.Trim(0,2157)
 	op_trim = source.std.Trim(5011,7169)
 	op_trim1_1 = op_trim.std.Trim(0,1999)
 	op = atf.ApplyCredits(op_trim1_1, ncop_src, ncop_processed)
 	op = op_trim1_1 + op_trim.std.Trim(2000)
-#	ed = atf.ApplyCredits(source.std.Trim(31526,33683), nced_src, nced_processed)
+	
 	ed = core.std.MaskedMerge(clip.std.Trim(31493,33688), source.std.Trim(31493,33688), atf.DiffRescaleMask(source.std.Trim(31493,33688), descale_h=844, kernel='Spline16', mthr=50).std.Maximum().std.Maximum().std.Inflate(), planes=[0], first_plane=True)
 
 	return clip.std.Trim(0,5010) + op + clip.std.Trim(7170,31492) + ed + clip.std.Trim(33689)
 
 @functoolz.curry
 def overlay_credits_in_preview(clip: vs.VideoNode, source: vs.VideoNode) -> vs.VideoNode:
-#	image = core.std.Trim(source, 33983, 33983)
-#	image = adjust.Tweak(image, sat=1, bright=10, cont=3, coring=True)
-#	mask = havf.mt_expand_multi(atf.DiffRescaleMask(image, descale_h=844, kernel='bicubic', b=0, c=3, mthr=40), sw=4, sh=4).std.Binarize()
 	mask = havf.mt_expand_multi(atf.DiffRescaleMask(core.std.Trim(source, 34048,34048), descale_h=844, kernel='bicubic', b=0, c=0.5, mthr=50), sw=4, sh=4).std.Binarize()
-#	mask = core.fb.FillBorders(mask, 193, 0, 219, 235)
 	return vrd.rfs(clip, core.std.MaskedMerge(clip, source, mask, planes=[0], first_plane=True), debut=33946, fin=34048)
-#	return vrd.rfs(clip, atf.ApplyImageMask(clip, source, r'mask02preview.png'), debut=33940, fin=34043)
 
 source_file = r'.\zombie03.m2ts'
 
@@ -64,5 +57,4 @@ src = open_source(source_file).std.Trim(0,34048)
 filter_chain = functoolz.compose(denoise_and_deband, overlay_credits_in_preview(source=src), overlay_credits_in_oped(source=src), do_main_aa)
 filtered = filter_chain(src)
 
-#filtered = src#•.std.Trim(5011,7169)
 filtered.set_output(0)
