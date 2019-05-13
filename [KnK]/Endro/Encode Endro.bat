@@ -20,7 +20,6 @@ echo Encodage Video avec VapourSynth...
 echo .
 echo ----------------
 echo Extraction audio du m2ts...
-REM %ffmpeg% -i "%~n1.m2ts" -c:a pcm_s24le "%~n1.w64"
 %eac3to% "%~n1.m2ts" 2:"%~n1.w64" -log=nul
 
 echo .
