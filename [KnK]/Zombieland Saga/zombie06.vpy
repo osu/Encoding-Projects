@@ -38,7 +38,6 @@ def overlay_credits_in_oped(clip: vs.VideoNode, source: vs.VideoNode) -> vs.Vide
 	nced_src = open_source(r'.\zombie_nced.m2ts').std.Trim(0,2157)
 	nced_processed = open_source(r'.\zombie_nced_loss.h264').std.Trim(0,2157)
 
-#	op = atf.ApplyCredits(source.std.Trim(5443,7599), ncop_src, ncop_processed)
 	op_trim = source.std.Trim(3141,5298)
 	op_trim1_1 = op_trim.std.Trim(0,1999)
 	op = atf.ApplyCredits(op_trim1_1, ncop_src, ncop_processed)
@@ -46,16 +45,6 @@ def overlay_credits_in_oped(clip: vs.VideoNode, source: vs.VideoNode) -> vs.Vide
 	ed = atf.ApplyCredits(source.std.Trim(31528,33685), nced_src, nced_processed)
 
 	return clip.std.Trim(0,3140) + op + clip.std.Trim(5299,31527) + ed + clip.std.Trim(33686)
-
-#@functoolz.curry
-#def overlay_credits_in_preview(clip: vs.VideoNode, source: vs.VideoNode) -> vs.VideoNode:
-#	image = core.std.Trim(source, 33983, 33983)
-#	image = adjust.Tweak(image, sat=1, bright=10, cont=3, coring=True)
-#	mask = havf.mt_expand_multi(atf.DiffRescaleMask(image, descale_h=844, kernel='bicubic', b=0, c=3, mthr=40), sw=4, sh=4).std.Binarize()
-#	mask = havf.mt_expand_multi(atf.DiffRescaleMask(core.std.Trim(source, 33980,33980), descale_h=844, kernel='bicubic', b=0, c=0.5, mthr=50), sw=4, sh=4).std.Binarize()
-#	mask = core.fb.FillBorders(mask, 193, 0, 219, 235)
-#	return vrd.rfs(clip, core.std.MaskedMerge(clip, source, mask, planes=[0], first_plane=True), debut=33915, fin=34046)
-#	return vrd.rfs(clip, atf.ApplyImageMask(clip, source, r'mask02preview.png'), debut=33940, fin=34043)
 
 source_file = r'.\zombie06.m2ts'
 
