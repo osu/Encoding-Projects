@@ -53,5 +53,4 @@ src = open_source(source_file).std.Trim(0,34045)
 filter_chain = functoolz.compose(denoise_and_deband, overlay_credits_in_oped(source=src), do_main_aa)
 filtered = filter_chain(src)
 
-#filtered = src#.std.Trim(3141,5298)
 filtered.set_output(0)
